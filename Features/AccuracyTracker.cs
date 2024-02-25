@@ -18,7 +18,7 @@ namespace Hikaria.AccuracyTracker.Features;
 [DisallowInGameToggle]
 public class AccuracyTracker : Feature
 {
-    public override string Name => "命中率显示";
+    public override string Name => "Accuracy Tracker";
 
     public override bool InlineSettingsIntoParentMenu => true;
 
@@ -28,32 +28,39 @@ public class AccuracyTracker : Feature
 
     public class AccuracyTrackerSettings
     {
-        [FSDisplayName("启用")]
+        [FSDisplayName("Enabled")]
         public bool Enabled { get => AccuracyUpdater.Enabled; set => AccuracyUpdater.Enabled = value; }
 
-        [FSDisplayName("显示其他玩家的命中率")]
+        [FSDisplayName("Show Other Players' Accuracy")]
         public bool ShowOtherPlayersAcc { get => AccuracyUpdater.ShowOtherPlayersAcc; set => AccuracyUpdater.ShowOtherPlayersAcc = value; }
 
-        [FSDisplayName("显示机器人玩家的命中率")]
+        [FSDisplayName("Show Bots' Accuracy")]
         public bool ShowBotsAcc { get => AccuracyUpdater.ShowBotsAcc; set => AccuracyUpdater.ShowBotsAcc = value; }
 
-        [FSDisplayName("显示格式")]
-        [FSDescription("{0}: 玩家名称, {1}: 命中率, {2}: 弱点命中率, {3}: 弱点命中次数, {4}: 命中次数, {5}: 弹丸击发次数")]
+        [FSDisplayName("Display Format")]
+        [FSDescription("{0}: Player Name\n{1}: Hitrate\n{2}: Weakpoint Hitrate\n{3}: Weapoint Hits\n{4}: Hits Landed\n{5}: Shots Fired")]
         public string ShowFormat { get => AccuracyUpdater.ShowFormat; set => AccuracyUpdater.ShowFormat = value; }
 
-        [FSHeader("玩家显示名称设置")]
-        [FSDisplayName("使用通用玩家名称")]
-        [FSDescription("若此项为 False, 则使用玩家名称")]
+        [FSDisplayName("Success Screen Display Format")]
+        [FSDescription("{0}: Hitrate\n{1}: Weakpoint Hitrate\n{2}: Weapoint Hits\n{3}: Hits Landed\n{4}: Shots Fired")]
+        public string EndscreenFormat { get => AccuracyUpdater.EndscreenFormat; set => AccuracyUpdater.EndscreenFormat = value; }
+
+        [FSDisplayName("Show Colors on Endscreen")]
+        public bool ShowColorsOnEndscreen { get; set; } = false;
+
+        [FSHeader("Player Name Settings")]
+        [FSDisplayName("Use Generic Player Name")]
+        [FSDescription("Uses Player's Nickname if disabled")]
         public bool UseGenericName { get => AccuracyUpdater.UseGenericName; set => AccuracyUpdater.UseGenericName = value; }
 
         [FSInline]
-        [FSHeader("显示位置设置")]
-        [FSDisplayName("显示位置设置")]
+        [FSHeader("Display Location Settings")]
+        [FSDisplayName("Display Location Settings")]
         public PositionSettings Position { get; set; } = new();
 
         [FSInline]
-        [FSHeader("显示位置设置")]
-        [FSDisplayName("显示颜色设置")]
+        [FSHeader("Display Location Settings")]
+        [FSDisplayName("Display Color Settings")]
         public ColorSettings FontColors { get; set; } = new();
     }
 
@@ -66,10 +73,10 @@ public class AccuracyTracker : Feature
         }
 
         [FSSeparator]
-        [FSDisplayName("人物")]
+        [FSDisplayName("Character")]
         [FSReadOnly]
         public string Character { get; set; }
-        [FSDisplayName("名称")]
+        [FSDisplayName("Generic Name")]
         public string Name
         {
             get
@@ -91,8 +98,8 @@ public class AccuracyTracker : Feature
 
     public class PositionSettings
     {
-        [FSDisplayName("横向偏移量")]
-        [FSDescription("单位: 像素")]
+        [FSDisplayName("X Offset")]
+        [FSDescription("In Pixels")]
         public int OffsetX
         {
             get
@@ -105,8 +112,8 @@ public class AccuracyTracker : Feature
             }
         }
 
-        [FSDisplayName("纵向偏移量")]
-        [FSDescription("单位: 像素")]
+        [FSDisplayName("Y Offset")]
+        [FSDescription("In Pixels")]
         public int OffsetY
         {
             get
@@ -122,15 +129,15 @@ public class AccuracyTracker : Feature
 
     public class ColorSettings
     {
-        [FSDisplayName("命中率颜色")]
+        [FSDisplayName("Hit Rate Color")]
         public SColor HittedRatioColor { get; set; } = new(0.7206f, 0.7206f, 0.7206f, 0.3137f);
-        [FSDisplayName("命中次数颜色")]
+        [FSDisplayName("Hits Landed Color")]
         public SColor HittedColor { get; set; } = new(0.7206f, 0.7206f, 0.7206f, 0.3137f);
-        [FSDisplayName("弱点命中率颜色")]
+        [FSDisplayName("Weak Point Hitrate Color")]
         public SColor WeakspotHittedRatioColor { get; set; } = new(0.7206f, 0.7206f, 0.7206f, 0.3137f);
-        [FSDisplayName("弱点命中次数颜色")]
+        [FSDisplayName("Weak Point Hits Landed Color")]
         public SColor WeakspotHittedColor { get; set; } = new(0.7206f, 0.7206f, 0.7206f, 0.3137f);
-        [FSDisplayName("弹丸击发次数颜色")]
+        [FSDisplayName("Shots Fired Color")]
         public SColor ShottedColor { get; set; } = new(0.7206f, 0.7206f, 0.7206f, 0.3137f);
     }
 

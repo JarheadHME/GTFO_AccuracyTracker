@@ -388,6 +388,23 @@ public class AccuracyUpdater : MonoBehaviour
     }
 
     private static string _showFormat = "{0}: {1}/{2}({4}/{5})";
+    
+    public static string EndscreenFormat
+    {
+        get
+        {
+            return _endscreenFormat;
+        }
+        set
+        {
+            if (IsSetup)
+            {
+                MarkAllAccuracyDataNeedUpdate();
+            }
+            _endscreenFormat = value;
+        }
+    }
+    private static string _endscreenFormat = "{0}/{1}({2}/{3}/{4})";
 
     public static bool UseGenericName
     {
@@ -558,17 +575,23 @@ public class AccuracyUpdater : MonoBehaviour
         {
             if (!Owner.HasCharacterSlot || !m_SlotDataLookup.TryGetValue(slot, out var data))
             {
-                return string.Format(Settings.ShowFormat, "-", "-", "-", 0, 0, 0);
+                return string.Format(Settings.EndscreenFormat, "-", "-", 0, 0, 0);
             }
+            string formatted;
             string prefix = IsAccuracyListener(Owner.Lookup) || (IsMasterHasAcc && Owner.IsBot) || Owner.IsLocal ? "" : "*";
             if (data.m_Shotted == 0)
             {
-                return $"{prefix}{string.Format("{0}/{1}({2}/{3}/{4})", "-%", "-%", 0, 0, 0)}";
+                formatted = $"{prefix}{string.Format(Settings.EndscreenFormat, "-%", "-%", 0, 0, 0)}";
             }
             else
             {
-                return $"{prefix}{string.Format("{0}/{1}({2}/{3}/{4})", $"{(int)(100 * data.m_Hitted / data.m_Shotted)}%", TotalHitted == 0 ? "-" : $"{(int)(100 * data.m_WeakspotHitted / data.m_Hitted)}%", $"{data.m_WeakspotHitted}", $"{data.m_Hitted}", $"{data.m_Shotted}")}";
+                formatted = $"{prefix}{string.Format(Settings.EndscreenFormat, $"<{Settings.FontColors.HittedRatioColor.ToHexString()}>{(int)(100 * data.m_Hitted / data.m_Shotted)}%</color>", TotalHitted == 0 ? "-" : $"<{Settings.FontColors.WeakspotHittedRatioColor.ToHexString()}>{(int)(100 * data.m_WeakspotHitted / data.m_Hitted)}%</color>", $"<{Settings.FontColors.WeakspotHittedColor.ToHexString()}>{data.m_WeakspotHitted}</color>", $"<{Settings.FontColors.HittedColor.ToHexString()}>{data.m_Hitted}</color>", $"<{Settings.FontColors.ShottedColor.ToHexString()}>{data.m_Shotted}</color>")}";
             }
+            if (Settings.ShowColorsOnEndscreen)
+            {
+                return formatted;
+            }
+            return formatted.RemoveHtmlTags();
         }
 
         public pAccuracyData GetAccuracyData()
